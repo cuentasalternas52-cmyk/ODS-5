@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Login - VozSegura</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body class="auth">
+
+<div class="container">
+
+    <!-- FORMULARIO -->
+    <div class="form-box">
+        <div class="logo">VozSegura</div>
+        <div id="mensaje"></div>
+        
+        <h2>Iniciar sesión</h2>
+        <p>Accede para recibir apoyo y protección</p>
+
+        <form action="php/login.php" method="POST">
+            <input type="text" name="usuario" placeholder="Usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+
+            <button class="btn primary">Entrar</button>
+        </form>
+
+        <p class="link">
+            ¿No tienes cuenta? <a href="registro.html">Regístrate</a>
+        </p>
+    </div>
+
+    <!-- IMAGEN -->
+    <div class="image">
+        <img src="imagenes/ilustracion VozSegura.png" alt="Ilustración">
+    </div>
+
+</div>
+
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const error = params.get("error");
+
+const mensaje = document.getElementById("mensaje");
+
+if(error === "clave"){
+    mensaje.innerHTML = "❌ Contraseña incorrecta";
+}
+if(error === "usuario"){
+    mensaje.innerHTML = "❌ Usuario no existe";
+}
+if(error === "datos"){
+    mensaje.innerHTML = "⚠️ Completa todos los campos";
+}
+</script>
+</body>
+</html>

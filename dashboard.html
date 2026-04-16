@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - VozSegura</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+   <div class="sidebar">
+    <h2>💜 VozSegura</h2>
+
+    <ul>
+        <li onclick="cargarSeccion('dashboard1.php')">🏠 Inicio</li>
+        <li onclick="cargarSeccion('info.html')">📄 Información</li>
+        <li onclick="cargarSeccion('contacto.html')">📞 Contacto</li>
+        <li onclick="cargarSeccion('prevencion.html')">🛡 Prevención</li>
+        <li onclick="cargarSeccion('perfil.php')">📍 Perfil</li>
+    </ul>
+
+    <a href="php/logout.php" class="logout">Cerrar sesión</a>
+</div>
+
+<!-- CONTENIDO -->
+<div class="main" id="contenido">
+
+    <!-- HEADER SUAVE -->
+    <div class="header">
+        <h1 id="saludo">¡Bienvenida! 💜</h1>
+        <p>Estamos aquí para apoyarte en todo momento.</p>
+    </div>
+
+    <!-- TARJETAS MODERNAS -->
+   <div class="cards">
+
+<div class="card card-dashboard" onclick="cargarSeccion('contacto.html')">
+    <div class="card-top">📣</div>
+    <div class="card-bottom">Solicitar ayuda</div>
+</div>
+
+<div class="card card-dashboard" onclick="cargarSeccion('info.html')">
+    <div class="card-top">📚</div>
+    <div class="card-bottom">Recursos educativos</div>
+</div>
+
+<div class="card card-dashboard" onclick="cargarSeccion('prevencion.html')">
+    <div class="card-top">🛡</div>
+    <div class="card-bottom">Prevenir</div>
+</div>
+
+<div class="card card-dashboard" onclick="cargarSeccion('perfil.php')">
+    <div class="card-top">👤</div>
+    <div class="card-bottom">Mi perfil</div>
+</div>
+
+ </div>
+</div>
+
+<!-- CHAT -->
+<div id="chatBtn" onclick="toggleChat()">💬</div>
+
+<div id="chatBox">
+    <div class="header">VozSegura Chat</div>
+    <div class="chat-box"></div>
+    <input type="text" id="input" placeholder="Escribe aquí...">
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
