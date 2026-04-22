@@ -1,5 +1,4 @@
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
 
 const app = express();
@@ -7,8 +6,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// 🔥 SERVIR FRONTEND
-app.use(express.static("public"));
 
 // 🔥 CHAT IA
 app.post("/chat", async (req, res) => {
