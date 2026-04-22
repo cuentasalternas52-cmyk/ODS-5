@@ -1,13 +1,5 @@
-<?php 
-session_start();
-if(!isset($_SESSION['usuario'])) {
-    header("Location: login.html");
-    exit(); 
-} 
-?>
-
 <div class="header">
-    <h1>¡Bienvenida, <?php echo $_SESSION['nombre']; ?>! 💜</h1>
+    <h1 id="saludo">¡Bienvenida 💜!</h1>
     <p>Estamos aquí para apoyarte en todo momento.</p>
 </div>
 
@@ -23,13 +15,12 @@ if(!isset($_SESSION['usuario'])) {
         <div class="card-bottom">Recursos educativos</div>
     </div>
 
-  <div class="card card-dashboard" onclick="cargarSeccion('prevencion.html')">
-    <div class="card-top">🛡</div>
-    <div class="card-bottom">Prevenir</div>
-</div>
+    <div class="card card-dashboard" onclick="cargarSeccion('prevencion.html')">
+        <div class="card-top">🛡</div>
+        <div class="card-bottom">Prevenir</div>
+    </div>
 
-
-    <div class="card card-dashboard" onclick="cargarSeccion('perfil.php')">
+    <div class="card card-dashboard" onclick="cargarSeccion('perfil.html')">
         <div class="card-top">👤</div>
         <div class="card-bottom">Mi perfil</div>
     </div>
