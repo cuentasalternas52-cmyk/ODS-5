@@ -1,13 +1,10 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
-
 app.use(express.json());
 app.use(cors());
 
-
-// 🔥 CHAT IA
 app.post("/chat", async (req, res) => {
     const userMessage = req.body.message;
 
@@ -20,7 +17,7 @@ app.post("/chat", async (req, res) => {
             },
             body: JSON.stringify({
                 model: "gpt-4.1-mini",
-                input: `Eres una asistente de apoyo emocional para mujeres:\n${userMessage}`
+                input: `Eres una asistente de apoyo emocional:\n${userMessage}`
             })
         });
 
@@ -35,5 +32,4 @@ app.post("/chat", async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Servidor corriendo"));
+app.listen(3000, () => console.log("Servidor corriendo"));
