@@ -28,8 +28,10 @@ app.post("/chat", async (req, res) => {
         });
 
     } catch (error) {
+        console.error(error);
         res.json({ reply: "Error en la IA" });
     }
 });
 
-app.listen(3000, () => console.log("Servidor corriendo"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Servidor corriendo en puerto " + PORT));
