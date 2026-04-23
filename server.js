@@ -4,12 +4,14 @@ import dotenv from "dotenv";
 import pkg from "pg";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 dotenv.config();
 
 const { Pool } = pkg;
-
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -106,7 +108,7 @@ app.get("/api/perfil", async (req, res) => {
 });
 
 /* =========================
-   🎤 API VOZ (YA LA TENÍAS)
+   🎤 API VOZ
 ========================= */
 app.post("/api/voz", async (req, res) => {
   try {
@@ -125,6 +127,37 @@ app.post("/api/voz", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error en API de voz" });
+  }
+});
+
+/* =========================
+   💬 CHAT IA
+========================= */
+app.post("/chat", async (req, res) => {
+  const userMessage = req.body.message;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        input: `Eres una asistente de apoyo emocional:\n${userMessage}`
+      })
+    });
+
+    const data = await response.json();
+
+    res.json({
+      reply: data.output?.[0]?.content?.[0]?.text || "Sin respuesta"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.json({ reply: "Error en la IA" });
   }
 });
 
