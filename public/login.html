@@ -38,38 +38,46 @@
 
 
 <script>
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
 
-    const usuario = document.getElementById("usuario").value;
-    const password = document.getElementById("password").value;
+    const form = document.getElementById("loginForm");
 
-    try {
-        const res = await fetch("/api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ usuario, password })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            document.getElementById("mensaje").innerHTML = data.error;
-            return;
-        }
-
-        // 🔐 guardar token
-        localStorage.setItem("token", data.token);
-
-        // 🚀 redirigir
-        window.location.href = "dashboard.html";
-
-    } catch (error) {
-        console.error(error);
-        document.getElementById("mensaje").innerHTML = "Error en servidor";
+    if (!form) {
+        console.log("No se encontró el formulario");
+        return;
     }
+
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const usuario = document.getElementById("usuario").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const res = await fetch("http://localhost:3000/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ usuario, password })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                document.getElementById("mensaje").innerText = data.error;
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById("mensaje").innerText = "Error en servidor";
+        }
+    });
+
 });
 </script>
 </body>
