@@ -1,0 +1,44 @@
+<div class="container">
+  <h2>Mi Perfil 👤</h2>
+
+  <p><strong>Usuario:</strong> <span id="usuario">Cargando...</span></p>
+  <p><strong>Nombre:</strong> <span id="nombre">Cargando...</span></p>
+  <p><strong>Correo:</strong> <span id="correo">Cargando...</span></p>
+
+  <button onclick="cerrarSesion()">Cerrar sesión</button>
+</div>
+
+<script>
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Debes iniciar sesión");
+    window.location.href = "login.html";
+  }
+
+  fetch("/api/perfil", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("No autorizado");
+    return res.json();
+  })
+  .then(data => {
+    document.getElementById("usuario").textContent = data.usuario;
+    document.getElementById("nombre").textContent = data.nombre;
+    document.getElementById("correo").textContent = data.correo;
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Sesión expirada, inicia nuevamente");
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  });
+
+  function cerrarSesion() {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  }
+</script>

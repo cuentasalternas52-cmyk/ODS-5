@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Registro - VozSegura</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+
+<body class="auth">
+
+<div class="container">
+
+    <div class="form-box">
+        <div class="logo">VozSegura</div>
+
+        <h2>Crear cuenta</h2>
+        <p>Tu voz importa. Estamos contigo 💜</p>
+
+        <form id="registroForm">
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+
+    <button type="submit" class="btn primary">Registrarse</button>
+</form>
+
+<p id="mensajeError" class="error"></p>
+
+        <p class="link">
+            ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+        </p>
+    </div>
+
+    <div class="image">
+        <img src="imagenes/ilustracion VozSegura.png" alt="Ilustración">
+    </div>
+
+</div>
+
+<script>
+document.getElementById("registroForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const usuario = document.getElementById("usuario").value;
+    const nombre = document.getElementById("nombre").value;
+    const correo = document.getElementById("correo").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const res = await fetch("/api/registro", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ usuario, nombre, correo, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            document.getElementById("mensajeError").innerHTML =
+                "<p style='color:red'>" + data.error + "</p>";
+            return;
+        }
+
+        alert("Usuario registrado correctamente");
+
+        // 🚀 redirigir a login
+        window.location.href = "login.html";
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById("mensajeError").innerHTML =
+            "<p style='color:red'>Error en el servidor</p>";
+    }
+});
+</script>
+</body>
+</html>

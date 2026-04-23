@@ -14,52 +14,70 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+
     // Enviar mensaje
     if (input && messages) {
 
         let esperando = false;
 
-        input.addEventListener("keypress", async function(e) {
-            if (e.key === "Enter" && !esperando) {
+       input.addEventListener("keydown", async function(e) {
+    if (e.key === "Enter" && !esperando) {
 
-                let msg = input.value.trim();
-                if (msg === "") return;
+        let msg = input.value.trim();
+        if (msg === "") return;
 
-                esperando = true;
+        esperando = true;
 
-                // mensaje usuario
-                messages.innerHTML += `<div class="user-msg">${msg}</div>`;
-                input.value = "";
+        const userDiv = document.createElement("div");
+        userDiv.className = "user-msg";
+        userDiv.textContent = msg;
+        messages.appendChild(userDiv);
 
-                // escribiendo
-                messages.innerHTML += `<div id="loading" class="bot-msg">Escribiendo...</div>`;
-                scrollChat();
+        input.value = "";
 
-                try {
-                    let res = await fetch("http://localhost:3000/chat", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ message: msg })
-                    });
+        const loading = document.createElement("div");
+        loading.id = "loading";
+        loading.className = "bot-msg";
+        loading.textContent = "Escribiendo...";
+        messages.appendChild(loading);
 
-                    let data = await res.json();
+        scrollChat();
 
-                    document.getElementById("loading")?.remove();
+        try {
+            let res = await fetch("/api/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: msg })
+            });
 
-                    messages.innerHTML += `<div class="bot-msg">${data.reply}</div>`;
+            if (!res.ok) throw new Error("Error API");
 
-                } catch (error) {
-                    document.getElementById("loading")?.remove();
-                    messages.innerHTML += `<div class="bot-msg">Error al conectar con la IA</div>`;
-                    console.error(error);
-                }
+            let data = await res.json();
 
-                esperando = false;
-                scrollChat();
-            }
-        });
+            loading.remove();
+
+            const botDiv = document.createElement("div");
+            botDiv.className = "bot-msg";
+            botDiv.textContent = data.reply;
+            messages.appendChild(botDiv);
+
+        } catch (error) {
+            loading.remove();
+
+            const errDiv = document.createElement("div");
+            errDiv.className = "bot-msg";
+            errDiv.textContent = "Error al conectar con la IA";
+            messages.appendChild(errDiv);
+
+            console.error(error);
+        }
+
+        esperando = false;
+        scrollChat();
+    }
+});
     }
 
     function scrollChat() {
@@ -79,9 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ================= CARGAR INICIO =================
 
-    cargarSeccion("dashboard1.php");
+    cargarSeccion("inicio.html");
 
 });
+
+function cerrarSesion() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
 
 
 // ================= CARGAR SECCIONES =================
