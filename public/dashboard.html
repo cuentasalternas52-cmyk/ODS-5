@@ -70,7 +70,21 @@
     <input type="text" id="input" placeholder="Escribe aquí...">
 </div>
 
+<script>
+    
+document.addEventListener("DOMContentLoaded", () => {
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.replace("login.html");
+    return;
+  }
+
+});
+</script>
 <script src="script.js"></script>
+
 
 </body>
 </html>
