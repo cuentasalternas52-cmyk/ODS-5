@@ -163,6 +163,6 @@ app.post("/chat", async (req, res) => {
 /* =========================
    🚀 SERVIDOR
 ========================= */
-export default function handler(req, res) {
+module.exports = (req, res) => {
   res.status(200).json({ ok: true });
-}
+};
