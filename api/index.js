@@ -1,5 +1,4 @@
 import express from "express";
-import fetch from "node-fetch";
 import dotenv from "dotenv";
 import pkg from "pg";
 import bcrypt from "bcrypt";
