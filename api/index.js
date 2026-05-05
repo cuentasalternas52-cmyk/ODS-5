@@ -26,9 +26,9 @@ const pool = new Pool({
    🔐 REGISTRO
 ========================= */
 app.post("/api/registro", async (req, res) => {
-  const { usuario, nombre, correo, password } = req.body;
-
   try {
+    const { usuario, nombre, correo, password } = req.body;
+
     const hash = await bcrypt.hash(password, 10);
 
     await pool.query(
@@ -39,7 +39,7 @@ app.post("/api/registro", async (req, res) => {
     res.json({ mensaje: "Usuario registrado" });
 
   } catch (err) {
-    console.error(err);
+    console.error("REGISTRO ERROR:", err);
     res.status(500).json({ error: "Error al registrar" });
   }
 });
@@ -48,9 +48,9 @@ app.post("/api/registro", async (req, res) => {
    🔐 LOGIN
 ========================= */
 app.post("/api/login", async (req, res) => {
-  const { usuario, password } = req.body;
-
   try {
+    const { usuario, password } = req.body;
+
     const result = await pool.query(
       "SELECT * FROM usuarios WHERE usuario=$1",
       [usuario]
@@ -61,6 +61,7 @@ app.post("/api/login", async (req, res) => {
     }
 
     const user = result.rows[0];
+
     const valido = await bcrypt.compare(password, user.password);
 
     if (!valido) {
@@ -75,7 +76,7 @@ app.post("/api/login", async (req, res) => {
     res.json({ token });
 
   } catch (err) {
-    console.error(err);
+    console.error("LOGIN ERROR:", err);
     res.status(500).json({ error: "Error en login" });
   }
 });
@@ -101,7 +102,7 @@ app.get("/api/perfil", async (req, res) => {
     res.json(result.rows[0]);
 
   } catch (err) {
-    console.error(err);
+    console.error("PERFIL ERROR:", err);
     res.status(401).json({ error: "Token inválido" });
   }
 });
@@ -110,9 +111,9 @@ app.get("/api/perfil", async (req, res) => {
    💬 CHAT IA
 ========================= */
 app.post("/api/chat", async (req, res) => {
-  const userMessage = req.body.message;
-
   try {
+    const userMessage = req.body.message;
+
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
@@ -132,7 +133,7 @@ app.post("/api/chat", async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("CHAT ERROR:", error);
     res.json({ reply: "Error en la IA" });
   }
 });

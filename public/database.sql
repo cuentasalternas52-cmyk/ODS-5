@@ -1,8 +1,4 @@
-CREATE DATABASE vozsegura;
-
-USE vozsegura;
-
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
   id SERIAL PRIMARY KEY,
   usuario VARCHAR(50) UNIQUE NOT NULL,
   nombre VARCHAR(100),
