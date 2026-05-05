@@ -175,7 +175,7 @@ app.post("/chat", async (req, res) => {
 /* =========================
    🚀 EXPORT VERCEL
 ========================= */
-export default app;
+export default serverless(app);
 
 /* =========================*/
 
