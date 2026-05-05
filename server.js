@@ -150,6 +150,10 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.json({ mensaje: "API VozSegura funcionando 🚀" });
+});
+
 // =========================
 // 🚀 SERVER START (RENDER)
 // =========================
