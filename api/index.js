@@ -164,3 +164,7 @@ app.post("/chat", async (req, res) => {
    🚀 SERVIDOR
 ========================= */
 export default (req, res) => app(req, res);
+
+export default function handler(req, res) {
+  res.status(200).json({ mensaje: "API funcionando" });
+}
