@@ -26,7 +26,7 @@ const pool = new Pool({
 /* =========================
    🔐 REGISTRO
 ========================= */
-app.post("/api/registro", async (req, res) => {
+app.post("/registro", async (req, res) => {
   const { usuario, nombre, correo, password } = req.body;
 
   try {
@@ -48,7 +48,7 @@ app.post("/api/registro", async (req, res) => {
 /* =========================
    🔐 LOGIN
 ========================= */
-app.post("/api/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { usuario, password } = req.body;
 
   try {
@@ -84,7 +84,7 @@ app.post("/api/login", async (req, res) => {
 /* =========================
    👤 PERFIL
 ========================= */
-app.get("/api/perfil", async (req, res) => {
+app.get("/perfil", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
 
@@ -110,7 +110,7 @@ app.get("/api/perfil", async (req, res) => {
 /* =========================
    🎤 API VOZ
 ========================= */
-app.post("/api/voz", async (req, res) => {
+app.post("/voz", async (req, res) => {
   try {
     const response = await fetch("https://api.ejemplo.com", {
       method: "POST",
@@ -164,8 +164,4 @@ app.post("/chat", async (req, res) => {
 /* =========================
    🚀 SERVIDOR
 ========================= */
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Servidor corriendo en puerto " + PORT);
-});
+export default (req, res) => app(req, res);
