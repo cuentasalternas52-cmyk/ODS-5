@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.innerText = "Cargando...";
 
         try {
-            const res = await fetch("/login", {
+            const res = await fetch("https://ods-5-1.onrender.com/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

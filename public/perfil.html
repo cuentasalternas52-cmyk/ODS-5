@@ -2,6 +2,8 @@
      <link rel="icon" href="imagenes/logo.jpg" type="image/png">
 </head>
 
+
+
 <div class="container">
   <h2>Mi Perfil 👤</h2>
 
@@ -24,10 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 🔄 Cargar perfil
+  // 🔄 Cargar perfil desde Render
   async function cargarPerfil() {
     try {
-      const res = await fetch("/perfil", {
+      const res = await fetch("https://ods-5-1.onrender.com/perfil", {
         headers: {
           "Authorization": "Bearer " + token
         }
@@ -37,23 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("No autorizado");
       }
 
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        throw new Error("Respuesta inválida");
-      }
+      const data = await res.json();
 
-      // ✅ Mostrar datos
-      document.getElementById("usuario").textContent = data.usuario || "—";
-      document.getElementById("nombre").textContent = data.nombre || "—";
-      document.getElementById("correo").textContent = data.correo || "—";
-
+     document.getElementById("usuario").textContent = data.usuario;
+     document.getElementById("nombre").textContent = data.nombre;
+     document.getElementById("correo").textContent = data.correo;
     } catch (err) {
       console.error(err);
-
-      alert("Sesión expirada o error. Inicia nuevamente.");
-
+      alert("Sesión expirada o error. Inicia sesión nuevamente.");
       localStorage.removeItem("token");
       window.location.href = "login.html";
     }
@@ -63,9 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// 🚪 Logout
+
+
+// 🚪 Cerrar sesión
 function cerrarSesion() {
   localStorage.removeItem("token");
   window.location.href = "login.html";
 }
 </script>
+
