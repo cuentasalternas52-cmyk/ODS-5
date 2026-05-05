@@ -11,7 +11,7 @@
   <p><strong>Nombre:</strong> <span id="nombre">Cargando...</span></p>
   <p><strong>Correo:</strong> <span id="correo">Cargando...</span></p>
 
-  <button onclick="cerrarSesion()">Cerrar sesión</button>
+  <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar sesión</button>
 </div>
 
 <script>
@@ -58,10 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-// 🚪 Cerrar sesión
 function cerrarSesion() {
   localStorage.removeItem("token");
-  window.location.href = "login.html";
+
+  document.body.style.opacity = "0.5";
+
+  setTimeout(() => {
+    window.location.href = "login.html";
+  }, 500);
 }
 </script>
 

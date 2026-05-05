@@ -540,7 +540,33 @@ body.auth {
     border-radius: 20px;
     background: white;
     box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+
 }
+
+.btn-cerrar {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+}
+
+.btn-cerrar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 0, 0, 0.4);
+}
+
+.btn-cerrar:active {
+    transform: scale(0.98);
+}
+
 
 /* ================= BOTONES GLOBALES ================= */
 
