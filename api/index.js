@@ -1,14 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
-import pkg from "pg";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import serverless from "serverless-http";
+import { Pool } from "@neondatabase/serverless";
 
 dotenv.config();
 
-const { Pool } = pkg;
+
 const app = express();
 
 // ✅ Solo estos middlewares
