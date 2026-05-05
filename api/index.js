@@ -29,6 +29,10 @@ app.post("/api/registro", async (req, res) => {
   try {
     const { usuario, nombre, correo, password } = req.body;
 
+    if (!usuario || !nombre || !correo || !password) {
+      return res.status(400).json({ error: "Faltan datos" });
+    }
+
     const hash = await bcrypt.hash(password, 10);
 
     await pool.query(
@@ -51,6 +55,10 @@ app.post("/api/login", async (req, res) => {
   try {
     const { usuario, password } = req.body;
 
+    if (!usuario || !password) {
+      return res.status(400).json({ error: "Faltan datos" });
+    }
+
     const result = await pool.query(
       "SELECT * FROM usuarios WHERE usuario=$1",
       [usuario]
@@ -68,9 +76,14 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: "JWT no configurado" });
+    }
+
     const token = jwt.sign(
       { id: user.id },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
 
     res.json({ token });
@@ -86,10 +99,20 @@ app.post("/api/login", async (req, res) => {
 ========================= */
 app.get("/api/perfil", async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ error: "No autorizado" });
+    }
+
+    const token = authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ error: "No autorizado" });
+      return res.status(401).json({ error: "Token faltante" });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: "JWT no configurado" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -108,11 +131,19 @@ app.get("/api/perfil", async (req, res) => {
 });
 
 /* =========================
-   💬 CHAT IA
+   💬 CHAT IA (OPENAI)
 ========================= */
 app.post("/api/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
+
+    if (!userMessage) {
+      return res.status(400).json({ reply: "Mensaje vacío" });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return res.json({ reply: "IA no configurada" });
+    }
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -128,17 +159,19 @@ app.post("/api/chat", async (req, res) => {
 
     const data = await response.json();
 
-    res.json({
-      reply: data.output?.[0]?.content?.[0]?.text || "Sin respuesta"
-    });
+    const reply =
+      data?.output?.[0]?.content?.[0]?.text ||
+      "No se pudo generar respuesta";
+
+    res.json({ reply });
 
   } catch (error) {
     console.error("CHAT ERROR:", error);
-    res.json({ reply: "Error en la IA" });
+    res.status(500).json({ reply: "Error en la IA" });
   }
 });
 
 /* =========================
-   🚀 EXPORT PARA VERCEL
+   🚀 EXPORT VERCEL
 ========================= */
 export default app;
