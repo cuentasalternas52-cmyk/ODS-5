@@ -9,36 +9,59 @@
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
   const token = localStorage.getItem("token");
 
+  // 🔒 Validar sesión
   if (!token) {
     alert("Debes iniciar sesión");
     window.location.href = "login.html";
+    return;
   }
 
-  fetch("/api/perfil", {
-    headers: {
-      "Authorization": "Bearer " + token
+  // 🔄 Cargar perfil
+  async function cargarPerfil() {
+    try {
+      const res = await fetch("/api/perfil", {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error("No autorizado");
+      }
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Respuesta inválida");
+      }
+
+      // ✅ Mostrar datos
+      document.getElementById("usuario").textContent = data.usuario || "—";
+      document.getElementById("nombre").textContent = data.nombre || "—";
+      document.getElementById("correo").textContent = data.correo || "—";
+
+    } catch (err) {
+      console.error(err);
+
+      alert("Sesión expirada o error. Inicia nuevamente.");
+
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
     }
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("No autorizado");
-    return res.json();
-  })
-  .then(data => {
-    document.getElementById("usuario").textContent = data.usuario;
-    document.getElementById("nombre").textContent = data.nombre;
-    document.getElementById("correo").textContent = data.correo;
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Sesión expirada, inicia nuevamente");
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
-  });
-
-  function cerrarSesion() {
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
   }
+
+  cargarPerfil();
+
+});
+
+// 🚪 Logout
+function cerrarSesion() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
 </script>

@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    // 🔒 VALIDAR SESIÓN
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
     // ================= CHAT =================
 
     const chatBtn = document.getElementById("chatBtn");
@@ -8,76 +15,81 @@ document.addEventListener("DOMContentLoaded", () => {
     const messages = document.querySelector(".chat-box");
 
     // Abrir / cerrar chat
-    if (chatBtn) {
+    if (chatBtn && chatBox) {
         chatBtn.addEventListener("click", () => {
             chatBox.style.display = chatBox.style.display === "block" ? "none" : "block";
         });
     }
-
 
     // Enviar mensaje
     if (input && messages) {
 
         let esperando = false;
 
-       input.addEventListener("keydown", async function(e) {
-    if (e.key === "Enter" && !esperando) {
+        input.addEventListener("keydown", async function(e) {
+            if (e.key === "Enter" && !esperando) {
 
-        let msg = input.value.trim();
-        if (msg === "") return;
+                const msg = input.value.trim();
+                if (!msg) return;
 
-        esperando = true;
+                esperando = true;
 
-        const userDiv = document.createElement("div");
-        userDiv.className = "user-msg";
-        userDiv.textContent = msg;
-        messages.appendChild(userDiv);
+                // Mensaje usuario
+                const userDiv = document.createElement("div");
+                userDiv.className = "user-msg";
+                userDiv.textContent = msg;
+                messages.appendChild(userDiv);
 
-        input.value = "";
+                input.value = "";
 
-        const loading = document.createElement("div");
-        loading.id = "loading";
-        loading.className = "bot-msg";
-        loading.textContent = "Escribiendo...";
-        messages.appendChild(loading);
+                // Loader
+                const loading = document.createElement("div");
+                loading.className = "bot-msg";
+                loading.textContent = "Escribiendo...";
+                messages.appendChild(loading);
 
-        scrollChat();
+                scrollChat();
 
-        try {
-            let res = await fetch("/api/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message: msg })
-            });
+                try {
+                    const res = await fetch("/api/chat", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ message: msg })
+                    });
 
-            if (!res.ok) throw new Error("Error API");
+                    if (!res.ok) throw new Error("Error API");
 
-            let data = await res.json();
+                    let data;
+                    try {
+                        data = await res.json();
+                    } catch {
+                        throw new Error("Respuesta inválida");
+                    }
 
-            loading.remove();
+                    loading.remove();
 
-            const botDiv = document.createElement("div");
-            botDiv.className = "bot-msg";
-            botDiv.textContent = data.reply;
-            messages.appendChild(botDiv);
+                    const botDiv = document.createElement("div");
+                    botDiv.className = "bot-msg";
+                    botDiv.textContent = data.reply || "Sin respuesta";
+                    messages.appendChild(botDiv);
 
-        } catch (error) {
-            loading.remove();
+                } catch (error) {
+                    loading.remove();
 
-            const errDiv = document.createElement("div");
-            errDiv.className = "bot-msg";
-            errDiv.textContent = "Error al conectar con la IA";
-            messages.appendChild(errDiv);
+                    const errDiv = document.createElement("div");
+                    errDiv.className = "bot-msg";
+                    errDiv.textContent = "Error al conectar con la IA";
+                    messages.appendChild(errDiv);
 
-            console.error(error);
-        }
+                    console.error(error);
+                }
 
-        esperando = false;
-        scrollChat();
-    }
-});
+                esperando = false;
+                scrollChat();
+            }
+        });
     }
 
     function scrollChat() {
@@ -88,9 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ================= SIDEBAR ACTIVO =================
 
-    document.querySelectorAll(".sidebar ul li").forEach(item => {
+    const items = document.querySelectorAll(".sidebar ul li");
+    items.forEach(item => {
         item.addEventListener("click", function() {
-            document.querySelectorAll(".sidebar ul li").forEach(i => i.classList.remove("active"));
+            items.forEach(i => i.classList.remove("active"));
             this.classList.add("active");
         });
     });
@@ -101,9 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+
+// 🚪 LOGOUT
 function cerrarSesion() {
-  localStorage.removeItem("token");
-  window.location.href = "login.html";
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
 }
 
 
@@ -112,24 +127,23 @@ function cerrarSesion() {
 async function cargarSeccion(pagina) {
 
     const contenido = document.getElementById("contenido");
-
     if (!contenido) return;
 
     try {
-        let res = await fetch(pagina);
+        const res = await fetch(pagina);
 
         if (!res.ok) throw new Error("No carga");
 
-        let html = await res.text();
+        const html = await res.text();
 
-        // animación salida
+        // Animación salida
         contenido.style.opacity = 0;
         contenido.style.transform = "translateY(10px)";
 
         setTimeout(() => {
             contenido.innerHTML = html;
 
-            // animación entrada
+            // Animación entrada
             contenido.style.opacity = 1;
             contenido.style.transform = "translateY(0)";
         }, 200);

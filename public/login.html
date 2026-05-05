@@ -5,6 +5,7 @@
 <title>Login - VozSegura</title>
 <link rel="stylesheet" href="estilo.css">
 </head>
+
 <body class="auth">
 
 <div class="container">
@@ -21,7 +22,7 @@
           <input type="text" id="usuario" placeholder="Usuario" required>
           <input type="password" id="password" placeholder="Contraseña" required>
 
-         <button type="submit" class="btn primary">Entrar</button>
+          <button type="submit" class="btn primary">Entrar</button>
        </form>
 
         <p class="link">
@@ -36,22 +37,28 @@
 
 </div>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("loginForm");
-
-    if (!form) {
-        console.log("No se encontró el formulario");
-        return;
-    }
+    const mensaje = document.getElementById("mensaje");
 
     form.addEventListener("submit", async function(e) {
         e.preventDefault();
 
-        const usuario = document.getElementById("usuario").value;
-        const password = document.getElementById("password").value;
+        const usuario = document.getElementById("usuario").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const btn = form.querySelector("button");
+
+        // 🔒 Validación básica
+        if (!usuario || !password) {
+            mensaje.innerHTML = "<p style='color:red'>Completa todos los campos</p>";
+            return;
+        }
+
+        // 🔄 Estado de carga
+        btn.disabled = true;
+        btn.innerText = "Cargando...";
 
         try {
             const res = await fetch("/api/login", {
@@ -62,23 +69,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ usuario, password })
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                throw new Error("Respuesta inválida del servidor");
+            }
 
             if (!res.ok) {
-                document.getElementById("mensaje").innerText = data.error;
+                mensaje.innerHTML = `<p style="color:red">${data.error || "Error en login"}</p>`;
+                btn.disabled = false;
+                btn.innerText = "Entrar";
                 return;
             }
 
+            // 💾 Guardar token
             localStorage.setItem("token", data.token);
+
+            // 🚀 Redirigir
             window.location.href = "dashboard.html";
 
         } catch (error) {
             console.error(error);
-            document.getElementById("mensaje").innerText = "Error en servidor";
+            mensaje.innerHTML = "<p style='color:red'>Error en el servidor</p>";
+            btn.disabled = false;
+            btn.innerText = "Entrar";
         }
     });
 
 });
 </script>
+
 </body>
 </html>

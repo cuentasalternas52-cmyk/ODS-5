@@ -25,7 +25,7 @@ const pool = new Pool({
 /* =========================
    🔐 REGISTRO
 ========================= */
-app.post("/registro", async (req, res) => {
+app.post("/api/registro", async (req, res) => {
   const { usuario, nombre, correo, password } = req.body;
 
   try {
@@ -47,7 +47,7 @@ app.post("/registro", async (req, res) => {
 /* =========================
    🔐 LOGIN
 ========================= */
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { usuario, password } = req.body;
 
   try {
@@ -83,7 +83,7 @@ app.post("/login", async (req, res) => {
 /* =========================
    👤 PERFIL
 ========================= */
-app.get("/perfil", async (req, res) => {
+app.get("/api/perfil", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
 
@@ -107,32 +107,9 @@ app.get("/perfil", async (req, res) => {
 });
 
 /* =========================
-   🎤 API VOZ
-========================= */
-app.post("/voz", async (req, res) => {
-  try {
-    const response = await fetch("https://api.ejemplo.com", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(req.body)
-    });
-
-    const data = await response.json();
-    res.json(data);
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error en API de voz" });
-  }
-});
-
-/* =========================
    💬 CHAT IA
 ========================= */
-app.post("/chat", async (req, res) => {
+app.post("/api/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
@@ -161,8 +138,6 @@ app.post("/chat", async (req, res) => {
 });
 
 /* =========================
-   🚀 SERVIDOR
+   🚀 EXPORT PARA VERCEL
 ========================= */
-module.exports = (req, res) => {
-  res.status(200).json({ ok: true });
-};
+export default app;

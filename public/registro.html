@@ -17,15 +17,15 @@
         <p>Tu voz importa. Estamos contigo 💜</p>
 
         <form id="registroForm">
-    <input type="text" id="usuario" placeholder="Usuario" required>
-    <input type="text" id="nombre" placeholder="Nombre completo" required>
-    <input type="email" id="correo" placeholder="Correo electrónico" required>
-    <input type="password" id="password" placeholder="Contraseña" required>
+            <input type="text" id="usuario" placeholder="Usuario" required>
+            <input type="text" id="nombre" placeholder="Nombre completo" required>
+            <input type="email" id="correo" placeholder="Correo electrónico" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
 
-    <button type="submit" class="btn primary">Registrarse</button>
-</form>
+            <button type="submit" class="btn primary">Registrarse</button>
+        </form>
 
-<p id="mensajeError" class="error"></p>
+        <p id="mensajeError" class="error"></p>
 
         <p class="link">
             ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
@@ -39,42 +39,74 @@
 </div>
 
 <script>
-document.getElementById("registroForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
 
-    const usuario = document.getElementById("usuario").value;
-    const nombre = document.getElementById("nombre").value;
-    const correo = document.getElementById("correo").value;
-    const password = document.getElementById("password").value;
+    const form = document.getElementById("registroForm");
+    const mensaje = document.getElementById("mensajeError");
 
-    try {
-        const res = await fetch("/api/registro", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ usuario, nombre, correo, password })
-        });
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
 
-        const data = await res.json();
+        const usuario = document.getElementById("usuario").value.trim();
+        const nombre = document.getElementById("nombre").value.trim();
+        const correo = document.getElementById("correo").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const btn = form.querySelector("button");
 
-        if (!res.ok) {
-            document.getElementById("mensajeError").innerHTML =
-                "<p style='color:red'>" + data.error + "</p>";
+        // 🔒 Validación básica
+        if (!usuario || !nombre || !correo || !password) {
+            mensaje.innerHTML = "<p style='color:red'>Completa todos los campos</p>";
             return;
         }
 
-        alert("Usuario registrado correctamente");
+        if (password.length < 6) {
+            mensaje.innerHTML = "<p style='color:red'>La contraseña debe tener al menos 6 caracteres</p>";
+            return;
+        }
 
-        // 🚀 redirigir a login
-        window.location.href = "login.html";
+        // 🔄 Estado de carga
+        btn.disabled = true;
+        btn.innerText = "Registrando...";
 
-    } catch (error) {
-        console.error(error);
-        document.getElementById("mensajeError").innerHTML =
-            "<p style='color:red'>Error en el servidor</p>";
-    }
+        try {
+            const res = await fetch("/api/registro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ usuario, nombre, correo, password })
+            });
+
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                throw new Error("Respuesta inválida del servidor");
+            }
+
+            if (!res.ok) {
+                mensaje.innerHTML = `<p style="color:red">${data.error || "Error al registrar"}</p>`;
+                btn.disabled = false;
+                btn.innerText = "Registrarse";
+                return;
+            }
+
+            // ✅ Registro exitoso
+            alert("Usuario registrado correctamente");
+
+            // 🚀 Redirigir
+            window.location.href = "login.html";
+
+        } catch (error) {
+            console.error(error);
+            mensaje.innerHTML = "<p style='color:red'>Error en el servidor</p>";
+            btn.disabled = false;
+            btn.innerText = "Registrarse";
+        }
+    });
+
 });
 </script>
+
 </body>
 </html>
