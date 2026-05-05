@@ -1,8 +1,11 @@
 <head>
-     <link rel="icon" href="imagenes/logo.jpg" type="image/png">
+  <link rel="icon" href="imagenes/logo.jpg" type="image/png">
+
+  <!-- 🔒 evitar cache (IMPORTANTE) -->
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 </head>
-
-
 
 <div class="container">
   <h2>Mi Perfil 👤</h2>
@@ -14,30 +17,15 @@
   <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar sesión</button>
 </div>
 
-
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-
+  // 🔒 PROTECCIÓN INMEDIATA (ANTI BACK)
   const token = localStorage.getItem("token");
 
   if (!token) {
     window.location.replace("login.html");
-    return;
   }
 
-});
-document.addEventListener("DOMContentLoaded", () => {
-
-  const token = localStorage.getItem("token");
-
-  // 🔒 Validar sesión
-  if (!token) {
-    alert("Debes iniciar sesión");
-    window.location.href = "login.html";
-    return;
-  }
-
-  // 🔄 Cargar perfil desde Render
+  // 🔄 CARGAR PERFIL
   async function cargarPerfil() {
     try {
       const res = await fetch("https://ods-5-1.onrender.com/perfil", {
@@ -46,37 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
+      const data = await res.json();
+      console.log("RESPUESTA PERFIL:", data);
+
       if (!res.ok) {
-        throw new Error("No autorizado");
+        throw new Error("Error en perfil");
       }
 
-      const data = await res.json();
+      document.getElementById("usuario").textContent = data.usuario;
+      document.getElementById("nombre").textContent = data.nombre;
+      document.getElementById("correo").textContent = data.correo;
 
-     document.getElementById("usuario").textContent = data.usuario;
-     document.getElementById("nombre").textContent = data.nombre;
-     document.getElementById("correo").textContent = data.correo;
     } catch (err) {
       console.error(err);
-      alert("Sesión expirada o error. Inicia sesión nuevamente.");
       localStorage.removeItem("token");
-      window.location.href = "login.html";
+      window.location.replace("login.html");
     }
   }
 
   cargarPerfil();
 
-});
-console.log("RESPUESTA PERFIL:", data);
-
-
-function cerrarSesion() {
-  localStorage.removeItem("token");
-
-  document.body.style.opacity = "0.5";
-
-  setTimeout(() => {
-    window.location.href = "login.html";
-  }, 500);
-}
+  // 🚪 CERRAR SESIÓN
+  function cerrarSesion() {
+    localStorage.removeItem("token");
+    window.location.replace("login.html");
+  }
 </script>
-
