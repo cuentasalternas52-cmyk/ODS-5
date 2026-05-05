@@ -25,7 +25,7 @@ const pool = new Pool({
 /* =========================
    🔐 REGISTRO
 ========================= */
-app.post("/api/registro", async (req, res) => {
+app.post("/registro", async (req, res) => {
   try {
     const { usuario, nombre, correo, password } = req.body;
 
@@ -51,7 +51,7 @@ app.post("/api/registro", async (req, res) => {
 /* =========================
    🔐 LOGIN
 ========================= */
-app.post("/api/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     const { usuario, password } = req.body;
 
@@ -97,7 +97,7 @@ app.post("/api/login", async (req, res) => {
 /* =========================
    👤 PERFIL
 ========================= */
-app.get("/api/perfil", async (req, res) => {
+app.get("/perfil", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -133,7 +133,7 @@ app.get("/api/perfil", async (req, res) => {
 /* =========================
    💬 CHAT IA (OPENAI)
 ========================= */
-app.post("/api/chat", async (req, res) => {
+app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
 
@@ -176,6 +176,3 @@ app.post("/api/chat", async (req, res) => {
 ========================= */
 export default app;
 
-export const config = {
-  runtime: "nodejs18.x"
-};
