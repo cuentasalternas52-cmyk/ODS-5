@@ -1,62 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <link rel="icon" href="imagenes/logo.jpg" type="image/png">
-
-  <!-- 🔒 evitar cache (IMPORTANTE) -->
-  <meta http-equiv="Cache-Control" content="no-store" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+<meta charset="UTF-8">
+<title>Login - VozSegura</title>
+<link rel="stylesheet" href="estilo.css">
+<link rel="icon" href="imagenes/logo.jpg" type="image/png">
 </head>
 
+<body class="auth">
+
 <div class="container">
-  <h2>Mi Perfil 👤</h2>
 
-  <p><strong>Usuario:</strong> <span id="usuario">Cargando...</span></p>
-  <p><strong>Nombre:</strong> <span id="nombre">Cargando...</span></p>
-  <p><strong>Correo:</strong> <span id="correo">Cargando...</span></p>
+    <!-- FORMULARIO -->
+    <div class="form-box">
+        <div class="logo">VozSegura</div>
+        <div id="mensaje"></div>
+        
+        <h2>Iniciar sesión</h2>
+        <p>Accede para recibir apoyo y protección</p>
 
-  <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar sesión</button>
+        <form id="loginForm">
+          <input type="text" id="usuario" placeholder="Usuario" required>
+          <input type="password" id="password" placeholder="Contraseña" required>
+
+          <button type="submit" class="btn primary">Entrar</button>
+       </form>
+
+        <p class="link">
+            ¿No tienes cuenta? <a href="registro.html">Regístrate</a>
+        </p>
+    </div>
+
+    <!-- IMAGEN -->
+    <div class="image">
+        <img src="imagenes/ilustracion-VozSegura.png" alt="Ilustración">
+    </div>
+
 </div>
 
+
 <script>
-  // 🔒 PROTECCIÓN INMEDIATA (ANTI BACK)
-  const token = localStorage.getItem("token");
+document.addEventListener("DOMContentLoaded", () => {
 
-  if (!token) {
-    window.location.replace("login.html");
-  }
+    const form = document.getElementById("loginForm");
+    const mensaje = document.getElementById("mensaje");
 
-  // 🔄 CARGAR PERFIL
-  async function cargarPerfil() {
-    try {
-      const res = await fetch("https://ods-5-1.onrender.com/perfil", {
-        headers: {
-          "Authorization": "Bearer " + token
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const usuario = document.getElementById("usuario").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const btn = form.querySelector("button");
+
+        // 🔒 Validación básica
+        if (!usuario || !password) {
+            mensaje.innerHTML = "<p style='color:red'>Completa todos los campos</p>";
+            return;
         }
-      });
 
-      const data = await res.json();
-      console.log("RESPUESTA PERFIL:", data);
 
-      if (!res.ok) {
-        throw new Error("Error en perfil");
-      }
+        // 🔄 Estado de carga
+        btn.disabled = true;
+        btn.innerText = "Cargando...";
 
-      document.getElementById("usuario").textContent = data.usuario;
-      document.getElementById("nombre").textContent = data.nombre;
-      document.getElementById("correo").textContent = data.correo;
+        try {
+            const res = await fetch("https://ods-5-1.onrender.com/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ usuario, password })
+            });
 
-    } catch (err) {
-      console.error(err);
-      localStorage.removeItem("token");
-      window.location.replace("login.html");
-    }
-  }
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                throw new Error("Respuesta inválida del servidor");
+            }
 
-  cargarPerfil();
+            if (!res.ok) {
+                mensaje.innerHTML = `<p style="color:red">${data.error || "Error en login"}</p>`;
+                btn.disabled = false;
+                btn.innerText = "Entrar";
+                return;
+            }
 
-  // 🚪 CERRAR SESIÓN
-  function cerrarSesion() {
-    localStorage.removeItem("token");
-    window.location.replace("login.html");
-  }
+            // 💾 Guardar token
+            localStorage.setItem("token", data.token);
+
+            // 🚀 Redirigir
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+            console.error(error);
+            mensaje.innerHTML = "<p style='color:red'>Error en el servidor</p>";
+            btn.disabled = false;
+            btn.innerText = "Entrar";
+        }
+    });
+
+});
 </script>
+
+</body>
+</html>
