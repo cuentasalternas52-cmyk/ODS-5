@@ -548,19 +548,19 @@ body.auth {
     padding: 12px;
     margin-top: 10px;
     border: none;
-    background: linear-gradient(135deg, hsl(288, 92%, 46%), hsl(288, 92%, 46%));
+    background: linear-gradient(135deg, #a58bff, #a58bff);
     color: white;
     font-size: 16px;
     font-weight: bold;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(210, 98, 230, 0.449);
 }
 
 .btn-cerrar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 6px 18px rgba(210, 98, 230, 0.449);
 }
 
 .btn-cerrar:active {
