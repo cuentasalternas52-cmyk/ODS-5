@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔄 Cargar perfil
   async function cargarPerfil() {
     try {
-      const res = await fetch("/api/perfil", {
+      const res = await fetch("/perfil", {
         headers: {
           "Authorization": "Bearer " + token
         }

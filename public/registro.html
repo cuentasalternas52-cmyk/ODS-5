@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.innerText = "Registrando...";
 
         try {
-            const res = await fetch("/api/registro", {
+            const res = await fetch("https://ods-5-1.onrender.com/registro", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
