@@ -175,3 +175,7 @@ app.post("/api/chat", async (req, res) => {
    🚀 EXPORT VERCEL
 ========================= */
 export default app;
+
+export const config = {
+  runtime: "nodejs18.x"
+};
