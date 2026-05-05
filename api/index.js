@@ -8,21 +8,24 @@ import pkg from "pg";
 dotenv.config();
 
 const { Pool } = pkg;
-
 const app = express();
 
-// 🔹 Middlewares
+// =========================
+// 🔹 MIDDLEWARES
+// =========================
 app.use(cors());
 app.use(express.json());
 
-// 🔹 Base de datos
+// =========================
+// 🗄️ BASE DE DATOS
+// =========================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
 
-/* =========================
-   🔐 REGISTRO
-========================= */
+// =========================
+// 🔐 REGISTRO
+// =========================
 app.post("/registro", async (req, res) => {
   try {
     const { usuario, nombre, correo, password } = req.body;
@@ -46,9 +49,9 @@ app.post("/registro", async (req, res) => {
   }
 });
 
-/* =========================
-   🔐 LOGIN
-========================= */
+// =========================
+// 🔐 LOGIN
+// =========================
 app.post("/login", async (req, res) => {
   try {
     const { usuario, password } = req.body;
@@ -88,9 +91,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-/* =========================
-   👤 PERFIL
-========================= */
+// =========================
+// 👤 PERFIL
+// =========================
 app.get("/perfil", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
@@ -116,9 +119,9 @@ app.get("/perfil", async (req, res) => {
   }
 });
 
-/* =========================
-   💬 CHAT IA
-========================= */
+// =========================
+// 💬 CHAT IA
+// =========================
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
@@ -147,11 +150,11 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-/* =========================
-   🚀 RENDER SERVER START
-========================= */
+// =========================
+// 🚀 SERVER START (RENDER)
+// =========================
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log("Servidor corriendo en puerto", PORT);
 });
