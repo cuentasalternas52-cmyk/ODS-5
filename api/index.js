@@ -4,12 +4,13 @@ import pkg from "pg";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import serverless from "serverless-http";
 
 dotenv.config();
 
 const { Pool } = pkg;
 const app = express();
-
+app.use(serverless(app));
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
